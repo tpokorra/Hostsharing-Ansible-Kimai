@@ -1,0 +1,98 @@
+---
+- hosts: kimai
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    # see https://docs.ansible.com/ansible/latest/user_guide/become.html#risks-of-becoming-an-unprivileged-user
+    ansible_common_remote_group: "{{pac}}"
+    ansible_remote_tmp: ~/.ansible/tmp
+
+  tasks:
+  - name: Create user, domain and database
+    import_tasks: tasks/hs_basis.yml
+
+  #################################
+  ## install requirements
+  #################################
+  - name: Install composer
+    import_tasks: tasks/hs_composer.yml
+
+  ##################################
+  ## install Kimai
+  ##################################
+  - name: Check for git working tree
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    stat:
+      path: /home/pacs/{{pac}}/users/{{user}}/kimai
+    register: workingtree
+  - name: get repo
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    git:
+      repo: https://github.com/kevinpapst/kimai2.git
+      dest: /home/pacs/{{pac}}/users/{{user}}/kimai
+      version: "{{kimai_version}}"
+      #single_branch: yes
+    when: not workingtree.stat.exists
+
+  ##################################
+  ## configuration
+  ##################################
+  - name: upload .env configuration file
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    template:
+      src: "templates/env"
+      dest: "/home/pacs/{{pac}}/users/{{user}}/kimai/.env"
+
+  ######################
+  ## initialise instance
+  ######################
+  - name: install dependencies with composer
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    shell: |
+      ~/composer/composer.phar --no-interaction install --no-dev --optimize-autoloader -n || exit -1
+      touch "/home/pacs/{{pac}}/users/{{user}}/.ansible_composer_ran"
+    args:
+      executable: /bin/bash
+      chdir: "/home/pacs/{{pac}}/users/{{user}}/kimai"
+      creates: "/home/pacs/{{pac}}/users/{{user}}/.ansible_composer_ran"
+
+  - name: initialise instance
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    shell: |
+      bin/console kimai:install -n || exit -1
+      echo "{{initialadminpassword}}" | bin/console kimai:user:create {{admin_user}} {{admin_email}} ROLE_SUPER_ADMIN || exit -1
+      touch "/home/pacs/{{pac}}/users/{{user}}/.ansible_instance_initialised"
+    args:
+      executable: /bin/bash
+      chdir: "/home/pacs/{{pac}}/users/{{user}}/kimai"
+      creates: "/home/pacs/{{pac}}/users/{{user}}/.ansible_instance_initialised"
+
+  ########################
+  ## setup the apache site
+  ########################
+  - name: check for htdocs-ssl directory
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    stat:
+      path: "/home/pacs/{{pac}}/users/{{user}}/doms/{{domain}}/htdocs-ssl"
+    register: htdocs_exists
+
+  - name: drop htdocs-ssl directory
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    file:
+      path: "/home/pacs/{{pac}}/users/{{user}}/doms/{{domain}}/htdocs-ssl"
+      state: absent
+    when: htdocs_exists.stat.islnk is defined and htdocs_exists.stat.islnk == False
+
+  - name: create symbolic link for htdocs-ssl
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    file:
+      src: "/home/pacs/{{pac}}/users/{{user}}/kimai/public"
+      dest: "/home/pacs/{{pac}}/users/{{user}}/doms/{{domain}}/htdocs-ssl"
+      state: link
