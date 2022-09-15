@@ -15,8 +15,8 @@ kimai:
       initialadminpassword: testpassw0rd_changeme2
 
       # see https://getcomposer.org/download/
-      composer_version: "2.3.9"
+      composer_version: "2.4.2"
 
       # see https://github.com/kevinpapst/kimai2/releases
-      kimai_version: "1.22.1"
+      kimai_version: "1.24.0"
 
