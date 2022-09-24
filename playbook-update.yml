@@ -29,7 +29,7 @@
     become: yes
     become_user: "{{pac}}-{{user}}"
     shell: |
-      bin/console kimai:update
+      bin/console kimai:update || exit -1
     args:
       executable: /bin/bash
       chdir: "/home/pacs/{{pac}}/users/{{user}}/kimai"
