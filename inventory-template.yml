@@ -1,0 +1,24 @@
+kimai:
+  hosts:
+    {{pac}}-{{username}}:
+      ansible_ssh_host: {{pac}}.hostsharing.net
+      ansible_ssh_user: {{pac}}
+      pac: {{pac}}
+      domain: {{domain}}
+      user: {{username}}
+      password: {{password}}
+
+      app_secret: "{{django_secret_key}}"
+
+      admin_user: admin_kimai
+      admin_email: admin@{{domain}}
+      initialadminpassword: {{initial_password}}
+
+      # see https://getcomposer.org/download/
+      composer_version: "2.4.2"
+
+      # see https://github.com/kevinpapst/kimai2/releases
+      kimai_version: "1.25.0"
+
+      SaasActivationPassword: {{SaasActivationPassword}}
+      SaasInstanceStatus: {{SaasInstanceStatus}}

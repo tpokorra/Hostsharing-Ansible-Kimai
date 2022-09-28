@@ -45,6 +45,11 @@
       src: "templates/env"
       dest: "/home/pacs/{{pac}}/users/{{user}}/kimai/.env"
 
+  - name: upload mysql configuration file
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    template: dest="/home/pacs/{{pac}}/users/{{user}}/.my.cnf" src="templates/my.cnf" mode=0600
+
   ######################
   ## initialise instance
   ######################

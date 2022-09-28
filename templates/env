@@ -3,8 +3,8 @@
 DATABASE_URL=mysql://{{pac}}_{{user}}:{{password}}@127.0.0.1:3306/{{pac}}_{{user}}?charset=utf8&serverVersion=mariadb-10.3.34
 # Email will be sent with this address as sender
 MAILER_FROM=kimai@{{domain}}
-# Email connection (disabled by default) more info at https://www.kimai.org/documentation/emails.html
-MAILER_URL=null://null
+# Email connection more info at https://www.kimai.org/documentation/emails.html
+MAILER_URL=smtp://{{pac}}_{{user}}:{{password}}@{{pac}}.hostsharing.net:465/?encryption=tls&auth_mode=login
 # do not change, unless you are developing for Kimai
 APP_ENV=prod
 # should be changed to a unique character sequence
