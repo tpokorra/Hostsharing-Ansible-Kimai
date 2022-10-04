@@ -12,5 +12,5 @@ APP_SECRET={{app_secret}}
 # unlikely, that you need to change this one
 CORS_ALLOW_ORIGIN=^https?://localhost(:[0-9]+)?$
 # Running behind reverse proxies? Use those:
-# TRUSTED_PROXIES=127.0.0.1,127.0.0.2
-# TRUSTED_HOSTS=localhost,example.com
+TRUSTED_PROXIES={{custom_domain}}
+TRUSTED_HOSTS={{domain}},{{custom_domain}}

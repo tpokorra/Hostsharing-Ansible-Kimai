@@ -1,0 +1,12 @@
+--- a/public/index.php	2022-10-04 09:51:11.964999637 +0200
++++ b/public/index.php	2022-10-04 09:51:16.721141554 +0200
+@@ -28,6 +28,9 @@
+ }
+ $kernel = new Kernel($env, $debug);
+ $request = Request::createFromGlobals();
++if (!empty($request->headers->get('X-Forwarded-Host')) && in_array($request->headers->get('X-Forwarded-Host'), explode(',', $trustedHosts))) {
++    $request->headers->set('HOST', $request->headers->get('X-Forwarded-Host'));
++}
+ $response = $kernel->handle($request);
+ $response->send();
+ $kernel->terminate($request, $response);

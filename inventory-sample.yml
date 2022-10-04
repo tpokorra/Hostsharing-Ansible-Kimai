@@ -5,6 +5,7 @@ kimai:
       ansible_ssh_user: xyz00
       pac: xyz00
       domain: kimai.example.org
+      custom_domain: kimai.example.org
       user: kimai
       password: testpassw0rd_changeme
 

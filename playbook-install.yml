@@ -35,6 +35,26 @@
       #single_branch: yes
     when: not workingtree.stat.exists
 
+  #####################################
+  ## fix for custom domain behind proxy
+  #####################################
+  - name: upload patch file for custom domain
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    template: dest="/home/pacs/{{pac}}/users/{{user}}/custom_domain.patch" src="templates/custom_domain.patch" mode=0600
+
+  - name: apply patch for custom domain
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    shell: |
+      patch -p1 < ../custom_domain.patch || exit -1
+      touch "/home/pacs/{{pac}}/users/{{user}}/.ansible_patch_applied"
+    args:
+      executable: /bin/bash
+      chdir: "/home/pacs/{{pac}}/users/{{user}}/kimai"
+      creates: "/home/pacs/{{pac}}/users/{{user}}/.ansible_patch_applied"
+    when: domain != custom_domain
+
   ##################################
   ## configuration
   ##################################

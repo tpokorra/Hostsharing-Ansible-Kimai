@@ -4,6 +4,7 @@
     ansible_python_interpreter: /usr/bin/python3
 
   # see https://www.kimai.org/documentation/updates.html
+  # also check: https://github.com/kevinpapst/kimai2/blob/master/UPGRADING.md
   tasks:
 
   - name: update git to new release
@@ -15,6 +16,19 @@
       version: "{{kimai_version}}"
       update: yes
       force: no
+
+  ################################
+  ## apply patch for custom domain
+  ################################
+  - name: apply patch for custom domain
+    become: yes
+    become_user: "{{pac}}-{{user}}"
+    shell: |
+      patch -p1 < ../custom_domain.patch || exit -1
+    args:
+      executable: /bin/bash
+      chdir: "/home/pacs/{{pac}}/users/{{user}}/kimai"
+    when: domain != custom_domain
 
   - name: Update with composer
     become: yes
@@ -33,5 +47,3 @@
     args:
       executable: /bin/bash
       chdir: "/home/pacs/{{pac}}/users/{{user}}/kimai"
-
-  # also check: https://github.com/kevinpapst/kimai2/blob/master/UPGRADING.md
