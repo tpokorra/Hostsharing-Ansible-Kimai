@@ -15,7 +15,7 @@
       dest: /home/pacs/{{pac}}/users/{{user}}/kimai
       version: "{{kimai_version}}"
       update: yes
-      force: no
+      force: yes
 
   ################################
   ## apply patch for custom domain
