@@ -29,7 +29,7 @@
     become: yes
     become_user: "{{pac}}-{{user}}"
     git:
-      repo: https://github.com/kevinpapst/kimai2.git
+      repo: https://github.com/kimai/kimai.git
       dest: /home/pacs/{{pac}}/users/{{user}}/kimai
       version: "{{kimai_version}}"
       #single_branch: yes
