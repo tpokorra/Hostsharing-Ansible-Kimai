@@ -18,6 +18,6 @@ kimai:
       # see https://getcomposer.org/download/
       composer_version: "2.4.2"
 
-      # see https://github.com/kevinpapst/kimai2/releases
-      kimai_version: "1.30.2"
+      # see https://github.com/kimai/kimai/releases
+      kimai_version: "1.30.5"
 
