@@ -19,5 +19,5 @@ kimai:
       composer_version: "2.4.2"
 
       # see https://github.com/kimai/kimai/releases
-      kimai_version: "1.30.5"
+      kimai_version: "1.30.9"
 
